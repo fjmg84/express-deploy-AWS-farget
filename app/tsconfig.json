@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "lib": ["esnext"],
+    "lib": [
+      "esnext"
+    ],
     "target": "es2020",
     "module": "commonjs",
     "outDir": "./dist",
@@ -16,5 +18,7 @@
   "exclude": [
     "node_modules",
     "dist"
-  ]
+  ],
+  "rootDir": "./src",
+  "outDir": "./dist"
 }

@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'app/**'
+      - '.github/workflows/build-and-push.yml'
 
 permissions:
   id-token: write
@@ -13,6 +16,9 @@ jobs:
   build-and-push:
     runs-on: ubuntu-24.04
     environment: production
+    defaults:
+      run:
+        working-directory: ./app
 
     steps:
       - name: Checkout code
@@ -42,3 +48,11 @@ jobs:
         run: |
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:latest
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ github.sha }}
+
+      - name: Trigger ECS deployment
+        run: |
+          aws ecs update-service \
+            --cluster express-app-cluster-dev \
+            --service express-app-app-dev \
+            --force-new-deployment \
+            --region ${{ secrets.AWS_REGION }}
